@@ -1026,6 +1026,8 @@
     },
   ];
 
+  const companies = [...new Set(data.map((d) => d.Make))];
+
   function handleSlideChange() {
     const slideButton1 = document.getElementById("slide-button-1");
     const slideButton2 = document.getElementById("slide-button-2");
@@ -1161,11 +1163,48 @@
       .attr("height", function (d) {
         return 500 - yAxis(d.averageMPG);
       });
+
+    const electricCarCompanies = [];
+
+    data.forEach((d) => {
+      if (d.Fuel === "Electricity" && !electricCarCompanies.includes(d.Make)) {
+        electricCarCompanies.push(d.Make);
+      }
+    });
+
+    const annotations = [
+      {
+        note: {
+          label: electricCarCompanies.join(",\n"),
+          title: "Companies",
+          wrap: 150,
+        },
+        connector: {
+          end: "dot",
+          type: "curve",
+          points: [
+            [-100, 14],
+            [-190, 52],
+          ],
+        },
+        x: 450,
+        y: 150,
+        dy: 100,
+        dx: -200,
+      },
+    ];
+
+    const makeAnnotations = d3
+      .annotation()
+      .type(d3.annotationLabel)
+      .annotations(annotations);
+
+    if (highwayOrCity === "highway") {
+      svg.append("g").attr("class", "annotation-group").call(makeAnnotations);
+    }
   }
 
   function renderCompaniesChart(highwayOrCity) {
-    const companies = [...new Set(data.map((d) => d.Make))];
-
     let companyData = [];
 
     companies.forEach((company) => {
@@ -1206,8 +1245,6 @@
       companyData.length - 10,
       companyData.length
     );
-
-    console.log(companyData);
 
     const xAxis = d3
       .scaleBand()
