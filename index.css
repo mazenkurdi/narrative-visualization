@@ -1,0 +1,27 @@
+#slide-picker {
+    display: flex;
+}
+
+.slide-button {
+    padding: 0.25em 0.5em;
+    background-color: lightgray;
+    text-align: center;
+    margin: 0 2px;
+    cursor: pointer;
+}
+
+.slide {
+    display: none;
+}
+
+.visible {
+    display: flex;
+}
+
+.sidebar {
+    width: 40%;
+}
+
+.bar {
+    fill: steelblue;
+}

@@ -1,1 +1,37 @@
-<h1>Hello World</h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+  </head>
+
+  <body>
+    <h1>Fuel Efficiency</h1>
+
+    <div id="slide-picker">
+        <div id="slide-button-1" class="slide-button" data-slide="1">1</div>
+        <div id="slide-button-2" class="slide-button" data-slide="2">2</div>
+    </div>
+
+    <div id="slide--1" class="slide visible">
+        <div class="sidebar">
+            <h2>Average Highway MPG per Fuel Type</h2>
+        </div>
+
+        <svg id="fuel-type-chart-highway" width=800 height=800></svg>
+    </div>
+
+    <div id="slide--2" class="slide">
+        <div class="sidebar">
+            <h2>Average City MPG per Fuel Type</h2>
+            The MPG is greatly exaggerated when 
+        </div>
+
+        <svg id="fuel-type-chart-city" width=800 height=800></svg>
+    </div>
+    
+    <script src='https://d3js.org/d3.v5.min.js'></script>
+    <script src="d3-annotation.min.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
