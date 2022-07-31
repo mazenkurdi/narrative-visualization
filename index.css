@@ -2,12 +2,30 @@
     display: flex;
 }
 
+.parameter-picker {
+    display: flex;
+    float: right;
+    margin-right: 24em;
+    margin-top: 1em;
+}
+
 .slide-button {
     padding: 0.25em 0.5em;
     background-color: lightgray;
     text-align: center;
     margin: 0 2px;
     cursor: pointer;
+}
+
+.parameter-button {
+    padding: 0.25em 0.5em;
+    background-color: lightgray;
+    text-align: center;
+    margin: 0 2px;
+}
+
+.selected {
+    background-color: gray;
 }
 
 .slide {
@@ -24,4 +42,5 @@
 
 .bar {
     fill: steelblue;
+    stroke: black;
 }

@@ -1029,24 +1029,76 @@
   function handleSlideChange() {
     const slideButton1 = document.getElementById("slide-button-1");
     const slideButton2 = document.getElementById("slide-button-2");
+    const slideButton3 = document.getElementById("slide-button-3");
+    const slideButton4 = document.getElementById("slide-button-4");
 
     function hideAllSlides() {
-        for (let i = 1; i < 3; i++) {
-            const slide = document.getElementById(`slide--${i}`);
-            slide.classList.remove("visible");
-        }
-    } 
+      for (let i = 1; i < 5; i++) {
+        const slide = document.getElementById(`slide--${i}`);
+        const button = document.getElementById(`slide-button-${i}`);
+        slide.classList.remove("visible");
+        button.classList.remove("selected");
+      }
+    }
 
     slideButton1.addEventListener("click", () => {
-        hideAllSlides();
-        const slideToActivate = slideButton1.dataset.slide;
-        document.getElementById(`slide--${slideToActivate}`).classList.add("visible");
+      hideAllSlides();
+      const slideToActivate = slideButton1.dataset.slide;
+      slideButton1.classList.add("selected");
+      document
+        .getElementById("parameter-button-city")
+        .classList.remove("selected");
+      document
+        .getElementById("parameter-button-highway")
+        .classList.add("selected");
+      document
+        .getElementById(`slide--${slideToActivate}`)
+        .classList.add("visible");
     });
 
     slideButton2.addEventListener("click", () => {
-        hideAllSlides();
-        const slideToActivate = slideButton2.dataset.slide;
-        document.getElementById(`slide--${slideToActivate}`).classList.add("visible");
+      hideAllSlides();
+      const slideToActivate = slideButton2.dataset.slide;
+      slideButton2.classList.add("selected");
+      document
+        .getElementById("parameter-button-highway")
+        .classList.remove("selected");
+      document
+        .getElementById("parameter-button-city")
+        .classList.add("selected");
+      document
+        .getElementById(`slide--${slideToActivate}`)
+        .classList.add("visible");
+    });
+
+    slideButton3.addEventListener("click", () => {
+      hideAllSlides();
+      const slideToActivate = slideButton3.dataset.slide;
+      slideButton3.classList.add("selected");
+      document
+        .getElementById("parameter-button-city")
+        .classList.remove("selected");
+      document
+        .getElementById("parameter-button-highway")
+        .classList.add("selected");
+      document
+        .getElementById(`slide--${slideToActivate}`)
+        .classList.add("visible");
+    });
+
+    slideButton4.addEventListener("click", () => {
+      hideAllSlides();
+      const slideToActivate = slideButton4.dataset.slide;
+      slideButton4.classList.add("selected");
+      document
+        .getElementById("parameter-button-highway")
+        .classList.remove("selected");
+      document
+        .getElementById("parameter-button-city")
+        .classList.add("selected");
+      document
+        .getElementById(`slide--${slideToActivate}`)
+        .classList.add("visible");
     });
   }
 
@@ -1076,7 +1128,7 @@
       });
     });
 
-    const xAxis = d3.scaleBand().domain(fuelTypes).range([0, 500]);
+    const xAxis = d3.scaleBand().domain(fuelTypes).range([0, 600]);
     const yAxis = d3.scaleLinear().domain([0, 130]).range([500, 0]);
 
     const svg = d3.select(`#fuel-type-chart-${highwayOrCity}`);
@@ -1111,7 +1163,93 @@
       });
   }
 
+  function renderCompaniesChart(highwayOrCity) {
+    const companies = [...new Set(data.map((d) => d.Make))];
+
+    let companyData = [];
+
+    companies.forEach((company) => {
+      let averageMPGSum = 0;
+      let averageMPGNumber = 0;
+
+      data.forEach((d) => {
+        if (d.Make === company) {
+          if (highwayOrCity === "highway") {
+            averageMPGSum += d.AverageHighwayMPG;
+          } else {
+            averageMPGSum += d.AverageCityMPG;
+          }
+
+          averageMPGNumber++;
+        }
+      });
+
+      companyData.push({
+        company,
+        averageMPG: averageMPGSum / averageMPGNumber,
+      });
+    });
+
+    companyData = companyData.sort(function compare(a, b) {
+      if (a.averageMPG < b.averageMPG) {
+        return -1;
+      }
+
+      if (a.averageMPG > b.averageMPG) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    companyData = companyData.slice(
+      companyData.length - 10,
+      companyData.length
+    );
+
+    console.log(companyData);
+
+    const xAxis = d3
+      .scaleBand()
+      .domain(companyData.map((c) => c.company))
+      .range([0, 600]);
+    const yAxis = d3.scaleLinear().domain([0, 110]).range([500, 0]);
+
+    const svg = d3.select(`#top-companies-chart-${highwayOrCity}`);
+
+    svg
+      .append("g")
+      .attr("transform", "translate(" + 30 + ", " + 30 + ")")
+      .call(d3.axisLeft(yAxis));
+
+    svg
+      .append("g")
+      .attr("transform", "translate(" + 30 + ", " + 530 + ")")
+      .call(d3.axisBottom(xAxis));
+
+    svg
+      .append("g")
+      .attr("transform", "translate(" + 30 + ", " + 30 + ")")
+      .selectAll(".bar")
+      .data(companyData)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", function (d) {
+        return xAxis(d.company);
+      })
+      .attr("y", function (d) {
+        return yAxis(d.averageMPG);
+      })
+      .attr("width", xAxis.bandwidth())
+      .attr("height", function (d) {
+        return 500 - yAxis(d.averageMPG);
+      });
+  }
+
   renderFuelTypeChart("highway");
   renderFuelTypeChart("city");
+  renderCompaniesChart("highway");
+  renderCompaniesChart("city");
   handleSlideChange();
 })();
