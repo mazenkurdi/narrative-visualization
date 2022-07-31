@@ -1172,7 +1172,7 @@
       }
     });
 
-    const annotations = [
+    const highwayAnnotations = [
       {
         note: {
           label: electricCarCompanies.join(",\n"),
@@ -1194,13 +1194,47 @@
       },
     ];
 
-    const makeAnnotations = d3
+    const makeHighwayAnnotations = d3
       .annotation()
       .type(d3.annotationLabel)
-      .annotations(annotations);
+      .annotations(highwayAnnotations);
+
+    const cityAnnotations = [
+      {
+        note: {
+          label: "We see a larger difference of 100 MPG",
+          wrap: 150,
+        },
+        connector: {
+          end: "dot",
+          type: "curve",
+          points: [
+            [-150, 14],
+            [-240, 52],
+          ],
+        },
+        x: 420,
+        y: 150,
+        dy: 100,
+        dx: -250,
+      },
+    ];
+
+    const makeCityAnnotations = d3
+      .annotation()
+      .type(d3.annotationLabel)
+      .annotations(cityAnnotations);
 
     if (highwayOrCity === "highway") {
-      svg.append("g").attr("class", "annotation-group").call(makeAnnotations);
+      svg
+        .append("g")
+        .attr("class", "annotation-group")
+        .call(makeHighwayAnnotations);
+    } else {
+      svg
+        .append("g")
+        .attr("class", "annotation-group")
+        .call(makeCityAnnotations);
     }
   }
 
